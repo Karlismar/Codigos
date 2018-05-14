@@ -9,13 +9,15 @@
 
        $.ajax({
         type: "POST",
-        url: "<?php echo base_url('')?>index.php/instaladores/autlog",
+        //CONTROLLER PARA AUTENTICAR USUARIO
+        url: "<?php echo base_url('')?>index.php/controller/funcao",
         data: {login: login, senha: senha},
         success: function(data)
         {
             data = JSON.parse(data);
             if (data.success){
-                window.open('<?php echo base_url('')?>index.php/home/instalador', '_blank');
+                //CONTROLLER DE ACESSO A CONTA DO USUARIO
+                window.open('<?php echo base_url('')?>index.php/controller/funcao', '_blank');
             }else{
                 alert('Erro ao logar');
             }
@@ -24,3 +26,23 @@
    });
 
 </script>
+
+<!-- FUNCAO QUE RETORNA OS DADOS DE AUTENTICAO -->
+
+<?php
+
+
+public function funcao(){
+
+     if(model($param1, $param2)){
+
+        echo '{"success":true}';
+    }
+    else{
+        echo '{"success":false}';
+    }
+}
+
+
+
+?>
