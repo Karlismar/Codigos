@@ -3,27 +3,35 @@
 
 <script type="text/javascript">
 
-    $(document).on('click', '.logar', function(){
-       var login = $(this).attr('data-email');
-       var senha = $(this).attr('data-senha');
+  $(document).on('click', '.logar', function(){
+   var login = $(this).attr('data-email');
+   var senha = $(this).attr('data-senha');
 
-       $.ajax({
-        type: "POST",
+   $.ajax({
+    type: "POST",
         //CONTROLLER PARA AUTENTICAR USUARIO
         url: "<?php echo base_url('')?>index.php/controller/funcao",
         data: {login: login, senha: senha},
+        beforeSend: function(){
+          $('#response').html("<img src='<?php echo base_url('media/img/load.gif')?>' />");
+        },
         success: function(data)
         {
-            data = JSON.parse(data);
-            if (data.success){
-                //CONTROLLER DE ACESSO A CONTA DO USUARIO
-                window.open('<?php echo base_url('')?>index.php/controller/funcao', '_blank');
-            }else{
-                alert('Erro ao logar');
-            }
-        }
-    });
-   });
+          data = JSON.parse(data);
+          if (data.success){
+         //CONTROLLER DE ACESSO A CONTA DO USUARIO
+         window.open('<?php echo base_url('')?>index.php/controller/funcao', '_blank');
+       }else{
+        alert('Erro ao logar');
+      }
+
+
+      $('#response').html("");
+
+    }
+  });
+   
+ });
 
 </script>
 
@@ -34,13 +42,13 @@
 
 public function funcao(){
 
-     if(model($param1, $param2)){
+ if(model($param1, $param2)){
 
-        echo '{"success":true}';
-    }
-    else{
-        echo '{"success":false}';
-    }
+  echo '{"success":true}';
+}
+else{
+  echo '{"success":false}';
+}
 }
 
 
