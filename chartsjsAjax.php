@@ -1,8 +1,33 @@
-  <script type="text/javascript">
+<!-- FUNÇÃO QUE RETORNA OS DADOS PARA O GRAFICO -->
+<?php
+        public function tempParado(){
+
+         $dados['DADOS'] = $this->model->duncao();
+         $movendo;
+         $parado;
+         foreach ($dados as $key) {
+             $movendo = $key['movendo'];
+             $parado = $key['parado'];
+         }
+
+         $data = array(
+
+            'movendo' => $movendo,
+            'parado'  => $parado
+        );
+
+        echo json_encode($data);
+
+    }
+?>
+
+<!-- SCRIT DO GRAFICO CHARTS.JS doughnut -->
+
+<script type="text/javascript">
+
   function hmsToSeconds(hms){
    var a = hms.split(':'); 
    var seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]); 
-   moment.unix(seconds).format("hh:mm a");
    return seconds;
 }
 
@@ -23,36 +48,46 @@ function secondsToTime(seconds){
     return String(horas)+":"+String(minutos)+":"+String(seconds);
 }
 
+// FUNÇÃO QUE RECUPERA VALOR PASSADO PELA URL 
+
 var placa = location.search.slice(1);
+
+// RETIRA O NOME DO ATRIBURO PASSADO PELA URL
+
 var plac = placa.split('placa=')[1];
+
 var dur = "<?php echo lang('duracao')?>";
 $(document).ready(function() {
+    // CARREGA IMG GIF NA DIV
+    $("#tparado").html('<img src="<?php echo base_url('urldaimagem')?>" height="130" width="130">');
     $.ajax({
-     url: '<?php echo base_url('veiculos/tempParado')?>',
+     url: '<?php echo base_url('controller')?>',
      type:'GET',
      data: {placa:plac},
      dataType: 'json',
      success: function(resposta){
+        // CARREGA O GRAFICO NA DIV
+        $("#tparado").html(' <canvas class="my-4 w-100" id="pizza" width="1000" height="400"></canvas>');
+        var mov = hmsToSeconds(resposta.movendo);
+        var par = hmsToSeconds(resposta.parado);
+        
+        var paradoL = "<?php echo lang('Parado') ?>"+" "+resposta.parado;
+        var movendoL = "<?php echo lang('Movendo') ?>"+" "+resposta.movendo;
 
-         var mov = hmsToSeconds(resposta.movendo);
-         var par = hmsToSeconds(resposta.parado);
-
-         var paradoL = "<?php echo lang('Parado') ?>"+" "+resposta.parado;
-         var movendoL = "<?php echo lang('Movendo') ?>"+" "+resposta.movendo;
-
-         new Chart(document.getElementById("pizza"), {
+        new Chart(document.getElementById("pizza"), {
             type: 'doughnut',
             data: {
               labels: [paradoL, movendoL],
               datasets: [
               {
                   label: "",
-                  backgroundColor: ["#3e95cd", "#8e5ea2"],
+                  backgroundColor: ["#e83a3a", "#5be244"],
                   data: [par,mov]
               }
               ]
           },
           options: {
+            // ALTERA O CONTEUDO DO TOOLTIPS
             tooltips: {
                 mode: 'nearest',
                 intersect: false,
@@ -78,13 +113,11 @@ $(document).ready(function() {
             }
         }
     });
-
-     },
-     error: function(json){
+    },
+    error: function(json){
         console.log(json);
     }
 });
 
 });
-
 </script>
